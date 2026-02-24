@@ -29,7 +29,7 @@
       max-width: 1000px;
       margin: 0 auto;
       width: 100%;
-      padding: 0 1rem; /* небольшие отступы по бокам на мобильных */
+      padding: 0 1rem;
     }
 
     .state-button {
@@ -129,13 +129,13 @@
       border-radius: 16px;
       overflow: hidden;
       margin: 2rem 0;
-      max-height: 500px; /* ограничение высоты */
+      max-height: 500px;
     }
     .image-background img {
       width: 100%;
       height: 100%;
       display: block;
-      object-fit: cover; /* чтобы изображение заполняло контейнер без искажений */
+      object-fit: cover;
     }
     .overlay-content {
       position: absolute;
@@ -186,14 +186,12 @@
       render();
     }
 
-    // --------------------------------------------------------------
-    // CALENDLY INIT (переинициализация после рендера)
-    // --------------------------------------------------------------
+    // Инициализация Calendly после рендера
     function initCalendlyWidget() {
       if (window.Calendly) {
         const widget = document.querySelector('.calendly-inline-widget');
         if (widget && widget.getAttribute('data-url')) {
-          // Очищаем возможное предыдущее содержимое (если виджет уже был инициализирован)
+          // Очищаем возможное предыдущее содержимое
           widget.innerHTML = '';
           Calendly.initInlineWidget({
             url: widget.getAttribute('data-url'),
@@ -203,7 +201,6 @@
           });
         }
       } else {
-        // Если скрипт ещё не загрузился, пробуем через 200мс
         setTimeout(initCalendlyWidget, 200);
       }
     }
@@ -218,7 +215,6 @@
         app.innerHTML = renderHome();
       }
       attachEventListeners();
-      // Запускаем инициализацию Calendly после обновления DOM
       setTimeout(initCalendlyWidget, 100);
     }
 
@@ -292,7 +288,6 @@
         <div style="background-color: #EDE7DC; min-height: 100vh; font-family: Verdana, Geneva, sans-serif; color: #3D3D3D;">
           ${menuOverlayHtml}
 
-          <!-- ОСНОВНОЙ КОНТЕЙНЕР ДЛЯ ДЕСКТОПА -->
           <div class="site-container">
 
             <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; padding-top: 3.5rem; position: sticky; top: 0; background: #EDE7DC; z-index: 100;">
@@ -334,14 +329,12 @@
               </div>
             </section>
 
-            <!-- APPROACH SECTION (реструктурирован) -->
+            <!-- APPROACH SECTION -->
             <section id="approach" style="max-width: 600px; margin: 0 auto; padding: 0;">
-              <!-- заголовок вне картинки -->
               <p style="font-size: 0.9rem; color: #ABABAB; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.1em;">
                 Approach
               </p>
 
-              <!-- блок с картинкой и текстом внутри -->
               <div class="image-background" style="margin: 0 0 1.5rem 0;">
                 <img src="images/illustration-3.jpg" alt="Peaceful interior" style="width: 100%; height: 360px; object-fit: cover; border-radius: 16px; display: block;">
                 <div class="overlay-content">
@@ -358,7 +351,6 @@
                 </div>
               </div>
 
-              <!-- сообщение и иконки под картинкой -->
               <p style="font-size: 1rem; color: #6B6B6B; margin-bottom: 1rem;">
                 Feel free to send me a message.
               </p>
@@ -384,6 +376,7 @@
               </div>
             </section>
 
+            <!-- BOOKING SECTION с исправленным виджетом -->
             <section id="booking" style="padding: 2rem 0 3rem; background: #FFFFFF; margin: 2rem 0; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);">
               <h2 style="font-size: 1.5rem; font-weight: 400; color: #3D3D3D; margin-bottom: 2rem; letter-spacing: -0.01em; text-align: center;">
                 Book a session
@@ -394,7 +387,8 @@
                 <p style="font-size: 0.9rem; color: #ABABAB; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em;">PRICE</p>
                 <p style="font-size: 1.25rem; color: #3D3D3D; font-weight: 400;">voluntary donation</p>
               </div>
-              <div class="calendly-inline-widget" data-url="https://calendly.com/fedyaj/60min?background_color=ede7dc&primary_color=a3b18a" style="min-width:320px; min-height:700px; height: auto;"></div>
+              <!-- Виджет с шириной 100% и фиксированной высотой 700px -->
+              <div class="calendly-inline-widget" data-url="https://calendly.com/fedyaj/60min?background_color=ede7dc&primary_color=a3b18a" style="width:100%; height:700px;"></div>
             </section>
 
             <section id="questionnaire" style="padding: 2rem 0 3rem; background: #FFFFFF; margin: 2rem 0; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);">
@@ -425,14 +419,12 @@
               </div>
             </section>
 
-            <!-- PRACTICAL INFO (реструктурирован) -->
+            <!-- PRACTICAL INFO -->
             <section id="info" style="max-width: 600px; margin: 0 auto; padding: 0;">
-              <!-- заголовок вне картинки -->
               <h2 style="font-size: 1.5rem; font-weight: 400; color: #3D3D3D; margin-bottom: 2rem; letter-spacing: -0.01em; text-align: center;">
                 Practical information
               </h2>
 
-              <!-- блок с картинкой и текстом внутри -->
               <div class="image-background" style="margin: 0 0 2rem 0;">
                 <img src="images/illustration-2.jpg" alt="Peaceful interior" style="width: 100%; height: 380px; object-fit: cover; border-radius: 16px; display: block;">
                 <div class="overlay-content">
