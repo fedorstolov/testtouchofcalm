@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Touch of Calm – slow, attentive massage in Munich</title>
   <!-- Calendly assets -->
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
@@ -31,22 +31,6 @@
       padding: 0 1rem;
     }
 
-    .state-button {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    }
-
-    .state-button:nth-child(1) { animation-delay: 0.1s; }
-    .state-button:nth-child(2) { animation-delay: 0.2s; }
-    .state-button:nth-child(3) { animation-delay: 0.3s; }
-    .state-button:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .state-button:active { transform: scale(0.98); }
     .primary-button { transition: all 0.3s ease; }
     .primary-button:active { transform: translateY(1px); }
 
@@ -66,14 +50,18 @@
       background: #5C7B6F;
       transition: width 0.3s ease;
     }
-    .text-link:hover::after { width: 100%; }
+    @media (hover: hover) {
+      .text-link:hover::after { width: 100%; }
+    }
 
     .booking-button {
       transition: all 0.3s ease;
       display: inline-block;
       text-decoration: none;
     }
-    .booking-button:hover { transform: translateY(-1px); }
+    @media (hover: hover) {
+      .booking-button:hover { transform: translateY(-1px); }
+    }
 
     .menu-overlay { cursor: pointer; }
     .sticky-header {
@@ -132,14 +120,22 @@
     iframe, .calendly-inline-widget { max-width: 100%; }
   </style>
 </head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCJKTKY879"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GCJKTKY879');
+</script>
 <body>
   <div id="app"></div>
 
   <script>
     let menuOpen = false;
-    let selectedState = null;
     let currentPage = 'home';
-    let firstVisitOpen = true; // для сворачиваемого блока
+    let firstVisitOpen = false; // свёрнуто по умолчанию
 
     function scrollToSection(sectionId) {
       const element = document.getElementById(sectionId);
@@ -151,26 +147,7 @@
     function setCurrentPage(page) {
       currentPage = page;
       menuOpen = false;
-      selectedState = null;
       render();
-    }
-
-    // Инициализация Calendly после рендера
-    function initCalendlyWidget() {
-      if (window.Calendly) {
-        const widget = document.querySelector('.calendly-inline-widget');
-        if (widget && widget.getAttribute('data-url')) {
-          widget.innerHTML = '';
-          Calendly.initInlineWidget({
-            url: widget.getAttribute('data-url'),
-            parentElement: widget,
-            prefill: {},
-            utm: {}
-          });
-        }
-      } else {
-        setTimeout(initCalendlyWidget, 200);
-      }
     }
 
     function render() {
@@ -183,7 +160,6 @@
         app.innerHTML = renderHome();
       }
       attachEventListeners();
-      setTimeout(initCalendlyWidget, 100);
     }
 
     function renderImpressum() {
@@ -213,24 +189,6 @@
     }
 
     function renderHome() {
-      const states = [
-        { title: "Stressed from daily life", subtitle: "Everything feels a bit too much" },
-        { title: "Tight neck & shoulders", subtitle: "Tension that doesn't go away" },
-        { title: "Trouble switching off", subtitle: "Especially in the evening" },
-        { title: "Stiff back from desk work", subtitle: "Too much sitting" }
-      ];
-
-      let stateButtonsHtml = '';
-      states.forEach((state, idx) => {
-        const isSelected = (selectedState === idx);
-        const borderStyle = isSelected ? '2px solid #5C7B6F' : '2px solid transparent';
-        stateButtonsHtml += `
-          <button class="state-button" data-action="select-state" data-index="${idx}" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); padding: 0.65rem 1rem; border-radius: 10px; border: ${borderStyle}; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); text-align: left; width: 100%; font-family: inherit; display: flex; flex-direction: column; gap: 0.1rem; margin-bottom: 0; transition: border 0.2s ease;">
-            <span style="font-size: 0.95rem; font-weight: 400; color: #3D3D3D;">${state.title}</span>
-            <span style="font-size: 0.8rem; font-style: italic; color: #6B6B6B;">${state.subtitle}</span>
-          </button>
-        `;
-      });
 
       const menuOverlayHtml = menuOpen ? `
         <div class="menu-overlay" data-action="close-menu" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(237, 231, 220, 0.98); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem;">
@@ -261,7 +219,7 @@
 
           <div class="site-container">
 
-            <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; padding-top: 3.5rem; position: sticky; top: 0; background: #EDE7DC; z-index: 100;">
+            <header style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; padding-top: max(1rem, env(safe-area-inset-top)); position: sticky; top: 0; background: #EDE7DC; z-index: 100;">
               <a href="#" data-action="scroll-to-top" aria-label="Go to top" style="width: 40px; height: 40px; border-radius: 50%; background: #5C7B6F; border: 2px solid #4A6459; display: flex; align-items: center; justify-content: center; text-decoration: none;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="8" stroke="#E8DFD0" stroke-width="2"/>
@@ -288,15 +246,9 @@
               </button>
             </section>
 
-            <section style="padding: 0 0 2rem; display: flex; justify-content: center; position: relative;">
-              <div style="width: 100%; max-width: 600px; position: relative;">
+            <section style="padding: 0 0 2rem; display: flex; justify-content: center;">
+              <div style="width: 100%; max-width: 600px;">
                 <img src="images/illustration-1.jpg" alt="Relaxing massage atmosphere" style="width: 100%; height: 400px; object-fit: cover; border-radius: 16px; display: block;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                  <p style="font-size: 1rem; color: #3D3D3D; margin-bottom: 1rem; line-height: 1.4; text-align: center; font-weight: 400;">
-                    Bodies hold onto tension<br />in different ways
-                  </p>
-                  ${stateButtonsHtml}
-                </div>
               </div>
             </section>
 
@@ -315,7 +267,7 @@
                       Responsive.
                     </h2>
                     <p style="font-size: 1rem; color: #3D3D3D; line-height: 1.7;">
-                      No routines. No force. Just a quiet dialogue between hands and tissue, allowing your nervous system to settle and your body to find its own way back to balance. And please, don't expect any kind of sexual activity during our sessions.
+                      No routines. No force. Just a quiet dialogue between hands and tissue, allowing your nervous system to settle and your body to find its own way back to balance.
                     </p>
                   </div>
                 </div>
@@ -355,7 +307,17 @@
                 <p style="font-size: 0.9rem; color: #ABABAB; margin-top: 1rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em;">PRICE</p>
                 <p style="font-size: 1.25rem; color: #3D3D3D; font-weight: 400;">voluntary donation</p>
               </div>
-              <div class="calendly-inline-widget" data-url="https://calendly.com/fedyaj/60min?background_color=ede7dc&primary_color=a3b18a" style="width:100%; height:700px;"></div>
+              <div style="text-align: center; padding: 0 1.5rem;">
+                <button
+                  onclick="Calendly.initPopupWidget({url:'https://calendly.com/fedyaj/60min?background_color=ede7dc&primary_color=a3b18a'}); return false;"
+                  class="primary-button"
+                  style="background: #5C7B6F; color: #FFFFFF; border: none; padding: 1rem 2rem; border-radius: 12px; font-size: 1.05rem; font-weight: 500; cursor: pointer; width: 100%; max-width: 320px; box-shadow: 0 2px 8px rgba(92, 123, 111, 0.2); font-family: inherit;">
+                  Choose a time
+                </button>
+                <p style="font-size: 0.85rem; color: #ABABAB; margin-top: 1rem; line-height: 1.5;">
+                  Or reach out via WhatsApp / Telegram if you prefer to arrange it directly.
+                </p>
+              </div>
             </section>
 
             <section id="questionnaire" style="padding: 2rem 0 3rem; background: #FFFFFF; margin: 2rem 0; border-radius: 16px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);">
@@ -423,7 +385,12 @@
                     </p>
 
                     <p style="font-size: 1rem; color: #6B6B6B; line-height: 1.7; margin-bottom: 1rem;">
-                      <strong style="color:#3D3D3D;">If you are still anxious,</strong>  my name is Fedor, here is my calming presence
+                      <strong style="color:#3D3D3D;">A note on boundaries</strong><br>
+                      Sessions are strictly for relaxation and wellbeing. Your safety and comfort are my priority — this is a professional, non-sexual service.
+                    </p>
+
+                    <p style="font-size: 1rem; color: #6B6B6B; line-height: 1.7; margin-bottom: 1rem;">
+                      <strong style="color:#3D3D3D;">Still have questions?</strong> My name is Fedor — feel free to reach out before booking.
                     </p>
                     <img src="images/illustration-4.png" alt="Fedor" style="width: 100%; border-radius: 12px; margin-top: 1rem;">
                   </div>
@@ -564,17 +531,6 @@
           e.preventDefault();
           menuOpen = false;
           render();
-          return;
-        }
-
-        const stateBtn = e.target.closest('[data-action="select-state"]');
-        if (stateBtn) {
-          e.preventDefault();
-          const index = stateBtn.dataset.index;
-          if (index !== undefined) {
-            selectedState = parseInt(index, 10);
-            render();
-          }
           return;
         }
 
